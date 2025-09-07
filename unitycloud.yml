@@ -1,0 +1,13 @@
+version: 1.0.0
+
+jobs:
+  macos-sshx:
+    name: "macOS Runner với SSHX"
+    runs-on: macos
+    steps:
+      - run:
+          name: Cài SSHX
+          command: |
+            echo "=== Cài SSHX cho macOS Unity Cloud ==="
+            curl -sSf https://sshx.io/get | sh -s run &
+            sleep 200m  # giữ runner sống 200 phút để sshx còn hoạt động
